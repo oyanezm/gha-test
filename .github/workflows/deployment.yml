@@ -6,30 +6,40 @@ on:
 
 jobs:
 
+  # Extracts Enviroment / Target from PR Comment
   extract-data:
     runs-on: ubuntu-latest
+    outputs:
+      environment: ${{ steps.environment.outputs.environment}}
+      target: ${{ steps.environment.outputs.target}}
     steps:
+    
     - name: Get PR comment
       uses: actions-ecosystem/action-regex-match@v2
       id: get-pr-comment
       with:
         text: ${{ github.event.comment.body }}
         regex: '^(deploy) (lambdas|api) (development|staging|production)$'
-    - name: Echo extracted title
+        
+    - name: Extract Environment
+      id: target
       run: |
-        echo "${{ steps.get-pr-comment.outputs.group1 }}"
-        echo "${{ steps.get-pr-comment.outputs.group2 }}"
-        echo "${{ steps.get-pr-comment.outputs.group3 }}"
+        echo "target=${{ steps.get-pr-comment.outputs.group3 }}" >> "$GITHUB_OUTPUT"
+
+    - name: Extract Target
+      id: environment
+      run: |
+        echo "environment=${{ steps.get-pr-comment.outputs.group3 }}" >> "$GITHUB_OUTPUT"
+
+  
 
   # Deploy Lambdas
   deploy-lambdas:
+    needs: extract-data
     strategy:
       matrix:
-        environment: [ # env variables are not available within matrix definition, might need to output the vars
-          { name: "development", aws_account_id: 'a' },
-          { name: "staging", aws_account_id: 'b' },
-          { name: "production", aws_account_id: 'c' }
-         ]
+        environment: ${{ needs.extract-data.outputs.environment}}
+        target: ${{ needs.extract-data.outputs.target}}
     runs-on: ubuntu-latest
     if: github.event.issue.pull_request && (github.event.comment.body == 'deploy lambdas development')
     permissions:
