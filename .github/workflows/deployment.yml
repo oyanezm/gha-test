@@ -4,7 +4,6 @@ on:
   issue_comment:
     types: [created]
 
-# This should probably o somewhere else as it's duplicated with lambda-build-test
 env:
   LAMBDA_TF_PATH: 'lambdas/availability/infra'
   LAMBDA_TF_VERSION: 1.1.7
