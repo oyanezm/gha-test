@@ -38,8 +38,8 @@ jobs:
     needs: extract-data
     strategy:
       matrix:
-        environment: ${{ needs.extract-data.outputs.environment}}
-        target: ${{ needs.extract-data.outputs.target}}
+        environment: ${{ toJSON(needs.extract-data.outputs.environment) }}
+        target: ${{ toJSON(eeds.extract-data.outputs.target) }}
     runs-on: ubuntu-latest
     if: github.event.issue.pull_request && (github.event.comment.body == 'deploy lambdas development')
     permissions:
