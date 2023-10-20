@@ -2,7 +2,7 @@ name: Deploy
 
 on:
   issue_comment:
-    types: [create]
+    types: [created]
 
 jobs:
 
