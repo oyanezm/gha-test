@@ -2,7 +2,7 @@ name: Deploy
 
 on:
   issue_comment:
-    types: [created]
+    types: [create]
 
 jobs:
 
@@ -15,7 +15,7 @@ jobs:
           { name: "staging", aws_account_id: 'b' },
           { name: "production", aws_account_id: 'c' }
          ]
-    runs-on: ubuntu
+    runs-on: ubuntu-latest
     if: github.event.issue.pull_request && (github.event.comment.body == 'deploy lambdas development')
     permissions:
       pull-requests: write
