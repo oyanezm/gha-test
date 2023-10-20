@@ -4,11 +4,6 @@ on:
   issue_comment:
     types: [created]
 
-# This should probably o somewhere else as it's duplicated with lambda-build-test
-env:
-  LAMBDA_TF_PATH: 'lambdas/availability/infra'
-  LAMBDA_TF_VERSION: 1.1.7
-
 jobs:
 
   # Deploy Lambdas
@@ -16,11 +11,11 @@ jobs:
     strategy:
       matrix:
         environment: [ # env variables are not available within matrix definition, might need to output the vars
-          { name: "development", aws_account_id: '202971816376' },
-          { name: "staging", aws_account_id: '015319854171' },
-          { name: "production", aws_account_id: '603510970537' }
+          { name: "development", aws_account_id: 'a' },
+          { name: "staging", aws_account_id: 'b' },
+          { name: "production", aws_account_id: 'c' }
          ]
-    runs-on: [self-hosted, "${{ matrix.environment.name }}"]
+    runs-on: ubuntu
     if: github.event.issue.pull_request && (github.event.comment.body == 'deploy lambdas development')
     permissions:
       pull-requests: write
