@@ -52,7 +52,7 @@ jobs:
       - name: echo
         run: |
           echo ${{ fromJSON(needs.extract-data.outputs.matrix).target }} 
-          echo 'account: ${{env.mapping[matrix.target]}}'
+          echo 'account: ${{env.mapping[matrix.environment]}}'
 
   # Deploy Lambdas
   deploy-api:
