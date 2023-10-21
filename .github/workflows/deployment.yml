@@ -4,7 +4,7 @@ on:
   issue_comment:
     types: [created]
 env:
-  mapping: 'fromJSON({"development": "111", "staging": "222", "production": "333"}'
+  mapping: '{"development": "111", "staging": "222", "production": "333"}'
 
 jobs:
 
@@ -52,8 +52,8 @@ jobs:
       - name: echo
         run: |
           echo ${{ fromJSON(needs.extract-data.outputs.matrix).target }} 
-          echo 'env: ${{env.mapping}}'
-          echo 'account: ${{env.mapping[matrix.environment]}}'
+          echo 'env: ${{fromJSON(env.mapping)}}'
+          echo 'account: ${{fromJSON(env.mapping)[matrix.environment]}}'
 
   # Deploy Lambdas
   deploy-api:
