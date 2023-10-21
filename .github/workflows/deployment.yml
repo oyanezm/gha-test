@@ -3,7 +3,7 @@ name: Deploy
 on:
   issue_comment:
     types: [created]
-
+    
 jobs:
 
   # Extracts Enviroment / Target from PR Comment
