@@ -41,6 +41,7 @@ jobs:
       matrix:
         target: ${{ fromJSON(needs.extract-data.outputs.target) }}
         environment: ${{ fromJSON(needs.extract-data.outputs.environment) }}
+    if: fromJSON(needs.extract-data.outputs.target)[0] == 'lambdas'
     runs-on: ubuntu-latest
     permissions:
       pull-requests: write
@@ -54,5 +55,29 @@ jobs:
       - uses: actions/checkout@v3
       - name: echo
         run: |
-          echo ${{ needs.extract-data.outputs.target }} 
+          echo ${{ fromJSON(needs.extract-data.outputs.target) }} 
+          echo ${{ needs.extract-data.outputs.environment }} 
+
+  # Deploy Lambdas
+  deploy-api:
+    needs: extract-data
+    strategy:
+      matrix:
+        target: ${{ fromJSON(needs.extract-data.outputs.target) }}
+        environment: ${{ fromJSON(needs.extract-data.outputs.environment) }}
+    if: fromJSON(needs.extract-data.outputs.target)[0] == 'api'
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+      contents: write
+      deployments: write
+      checks: read
+      statuses: write
+    steps:
+    
+      # Checkout
+      - uses: actions/checkout@v3
+      - name: echo
+        run: |
+          echo ${{ fromJSON(needs.extract-data.outputs.target) }} 
           echo ${{ needs.extract-data.outputs.environment }} 
