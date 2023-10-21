@@ -25,7 +25,7 @@ jobs:
     - name: Extract Environment
       id: matrix
       run: |
-        echo "matrix=$(jq -cn '{target: ${{steps.get-pr-comment.outputs.group2}} }')" >> $GITHUB_OUTPUT 
+        echo "matrix=[{ \"target\" : [\"${{ steps.get-pr-comment.outputs.group2 }}\"], \"environment\": [\"${{ steps.get-pr-comment.outputs.group3 }}\"] }]" >> "$GITHUB_OUTPUT"
   
 
   # Deploy Lambdas
@@ -33,7 +33,7 @@ jobs:
     needs: extract-data
     strategy:
       matrix: ${{ fromJSON(needs.extract-data.outputs.matrix) }}
-    # if: fromJSON(needs.extract-data.outputs.matrix)[0].target == 'lambdas'
+    if: fromJSON(needs.extract-data.outputs.matrix)[0].target[0] == 'lambdas'
     runs-on: ubuntu-latest
     permissions:
       pull-requests: write
@@ -54,7 +54,7 @@ jobs:
     needs: extract-data
     strategy:
       matrix: ${{ fromJSON(needs.extract-data.outputs.matrix) }}
-    # if: fromJSON(needs.extract-data.outputs.matrix)[0].target == 'api'
+    if: fromJSON(needs.extract-data.outputs.matrix)[0].target[0] == 'api'
     runs-on: ubuntu-latest
     permissions:
       pull-requests: write
