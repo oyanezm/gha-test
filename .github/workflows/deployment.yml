@@ -26,7 +26,7 @@ jobs:
     - name: Extract Environment
       id: target
       run: |
-        echo "target='[\"${{ steps.get-pr-comment.outputs.group3 }}\"]'" >> "$GITHUB_OUTPUT"
+        echo "target='[\"${{ steps.get-pr-comment.outputs.group2 }}\"]'" >> "$GITHUB_OUTPUT"
 
     - name: Extract Target
       id: environment
@@ -39,7 +39,8 @@ jobs:
     needs: extract-data
     strategy:
       matrix:
-        environment: ${{ fromJSON(needs.extract-data.outputs.environment) }}
+        taret: ${{ fromJSON(needs.extract-data.outputs.target) }}
+        # environment: ${{ fromJSON(needs.extract-data.outputs.environment) }}
     runs-on: ubuntu-latest
     if: github.event.issue.pull_request && (github.event.comment.body == 'deploy lambdas development')
     permissions:
