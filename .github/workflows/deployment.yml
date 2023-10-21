@@ -14,23 +14,24 @@ jobs:
       target: ${{ steps.environment.outputs.target}}
     steps:
     
+    # Parse Comment
     - name: Get PR comment
       uses: actions-ecosystem/action-regex-match@v2
       id: get-pr-comment
       with:
         text: ${{ github.event.comment.body }}
         regex: '^(deploy) (lambdas|api) (development|staging|production)$'
-        
+      
+    # Output for Matrix
     - name: Extract Environment
       id: target
       run: |
-        echo "target=${{ steps.get-pr-comment.outputs.group3 }}" >> "$GITHUB_OUTPUT"
+        echo "target='[\"${{ steps.get-pr-comment.outputs.group3 }}\"]'" >> "$GITHUB_OUTPUT"
 
     - name: Extract Target
       id: environment
       run: |
         echo "environment=${{ steps.get-pr-comment.outputs.group3 }}" >> "$GITHUB_OUTPUT"
-
   
 
   # Deploy Lambdas
@@ -38,7 +39,7 @@ jobs:
     needs: extract-data
     strategy:
       matrix:
-        environment: ${{ needs.extract-data.outputs.environment }}
+        environment: ${{ fromJSON(needs.extract-data.outputs.environment) }}
     runs-on: ubuntu-latest
     if: github.event.issue.pull_request && (github.event.comment.body == 'deploy lambdas development')
     permissions:
