@@ -3,6 +3,8 @@ name: Deploy
 on:
   issue_comment:
     types: [created]
+env:
+  mapping: 'fromJSON({"development": "111", "staging": "222", "production": "333"}'
 
 jobs:
 
@@ -34,6 +36,7 @@ jobs:
     strategy:
       matrix:
         target: ${{ fromJSON(needs.extract-data.outputs.matrix)[0].target }}
+        environment: ${{ fromJSON(needs.extract-data.outputs.matrix)[0].environment }}
     if: fromJSON(needs.extract-data.outputs.matrix)[0].target[0] == 'lambdas'
     runs-on: ubuntu-latest
     permissions:
@@ -49,6 +52,7 @@ jobs:
       - name: echo
         run: |
           echo ${{ fromJSON(needs.extract-data.outputs.matrix).target }} 
+          echo 'account: ${{env.mapping[matrix.target])}}'
 
   # Deploy Lambdas
   deploy-api:
