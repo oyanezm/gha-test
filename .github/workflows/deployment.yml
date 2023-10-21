@@ -31,7 +31,7 @@ jobs:
     - name: Extract Target
       id: environment
       run: |
-        echo "environment=${{ steps.get-pr-comment.outputs.group3 }}" >> "$GITHUB_OUTPUT"
+        echo "environment=[\"${{ steps.get-pr-comment.outputs.group3 }}\"]" >> "$GITHUB_OUTPUT"
   
 
   # Deploy Lambdas
@@ -40,7 +40,7 @@ jobs:
     strategy:
       matrix:
         target: ${{ fromJSON(needs.extract-data.outputs.target) }}
-        # environment: ${{ fromJSON(needs.extract-data.outputs.environment) }}
+        environment: ${{ fromJSON(needs.extract-data.outputs.environment) }}
     runs-on: ubuntu-latest
     permissions:
       pull-requests: write
