@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       environment: ${{ steps.environment.outputs.environment}}
-      target: ${{ steps.environment.outputs.target}}
+      target: ${{ steps.target.outputs.target}}
     steps:
     
     # Parse Comment
@@ -37,9 +37,9 @@ jobs:
   # Deploy Lambdas
   deploy-lambdas:
     needs: extract-data
-    # strategy:
-    #   matrix:
-        # target: ${{ fromJSON(needs.extract-data.outputs.target) }}
+    strategy:
+      matrix:
+        target: ${{ needs.extract-data.outputs.target }}
         # environment: ${{ fromJSON(needs.extract-data.outputs.environment) }}
     runs-on: ubuntu-latest
     permissions:
@@ -55,3 +55,4 @@ jobs:
       - name: echo
         run: |
           echo ${{ needs.extract-data.outputs.target }} 
+          echo ${{ needs.extract-data.outputs.environment }} 
