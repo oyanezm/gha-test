@@ -32,7 +32,9 @@ jobs:
   deploy-lambdas:
     needs: extract-data
     strategy:
-      matrix: ${{ fromJSON(needs.extract-data.outputs.matrix)[0] }}
+      matrix:
+        target: ${{ fromJSON(needs.extract-data.outputs.matrix)[0].target }}
+        environment: ${{ fromJSON(needs.extract-data.outputs.matrix)[0].environment }}
     if: fromJSON(needs.extract-data.outputs.matrix)[0].target == 'lambdas'
     runs-on: ubuntu-latest
     permissions:
