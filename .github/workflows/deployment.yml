@@ -37,12 +37,11 @@ jobs:
   # Deploy Lambdas
   deploy-lambdas:
     needs: extract-data
-    strategy:
-      matrix:
-        taret: ${{ fromJSON(needs.extract-data.outputs.target) }}
+    # strategy:
+    #   matrix:
+        # target: ${{ fromJSON(needs.extract-data.outputs.target) }}
         # environment: ${{ fromJSON(needs.extract-data.outputs.environment) }}
     runs-on: ubuntu-latest
-    if: github.event.issue.pull_request && (github.event.comment.body == 'deploy lambdas development')
     permissions:
       pull-requests: write
       contents: write
@@ -53,3 +52,6 @@ jobs:
     
       # Checkout
       - uses: actions/checkout@v3
+      - name: echo
+        run: |
+          echo ${{ fromJSON(needs.extract-data.outputs.target) }} 
