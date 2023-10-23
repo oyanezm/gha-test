@@ -35,7 +35,7 @@ jobs:
     - name: Extract Lambda Deployment Validation
       id: validator
       run: |
-        echo "lambda=${{ fromJSON(env.mapping)[steps.get-pr-comment.outputs.group3] }} >> "$GITHUB_OUTPUT"
+        echo "lambda=${{ fromJSON(env.mapping)[steps.get-pr-comment.outputs.group3] }}" >> "$GITHUB_OUTPUT"
   
 
   # Deploy Lambdas
