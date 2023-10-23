@@ -6,7 +6,12 @@ on:
 env:
   mapping: '{"development": "111", "staging": "222", "production": "333"}'
 
-permissions: write-all
+permissions:
+  pull-requests: write
+  contents: write
+  deployments: write
+  checks: read
+  statuses: write
 
 jobs:
 
@@ -28,11 +33,12 @@ jobs:
     runs-on: ubuntu-latest
     needs: prepare-data
     env:
+      test:  ${{ needs.prepare-data.outputs.is-valid-environment }}
       is-valid-deployment: ${{ (needs.prepare-data.outputs.is-valid-lambdas-deployment != 'true' && needs.prepare-data.outputs.is-valid-api-deployment != 'true') || !needs.prepare-data.outputs.is-valid-environment }}
       reactions: '{"true": "+1", "false": "-1"}'
     steps:
       - uses: actions/checkout@v3
-      - run: echo ${{ env.is-valid-deployment }}
+      - run: echo ${{ env.is-valid-deployment }} {{env.test}}
 
       - uses: khan/pull-request-comment-trigger@v1.1.0
         id: check
@@ -58,11 +64,6 @@ jobs:
     if: needs.prepare-data.outputs.is-valid-lambdas-deployment == 'true'
     runs-on: ubuntu-latest
     permissions:
-      pull-requests: write
-      contents: write
-      deployments: write
-      checks: read
-      statuses: write
     steps:
     
       # Checkout
