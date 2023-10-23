@@ -55,7 +55,10 @@ jobs:
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: "# Deploying `api` to `staging` \n commit: ${{ github.workflow }} \n Run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+              body: "" +
+                "# Deploying `${{ steps.extract-data.outputs.matrix[0].target[0] }}` to `${{ steps.extract-data.outputs.matrix[0].environment[0] }}` \n" + 
+                "Commit: ${{ github.workflow }} \n" + 
+                "Run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
             })
 
   # Deploy Lambdas
