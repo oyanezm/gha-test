@@ -26,6 +26,8 @@ jobs:
   validate-deployment:
     runs-on: ubuntu-latest
     needs: prepare-data
+    env:
+      is-valid-deployment: (needs.prepare-data.outputs.is-valid-lambdas-deployment != 'true' && needs.prepare-data.outputs.is-valid-api-deployment != 'true') || !needs.prepare-data.outputs.is-valid-environment
     steps:
       - uses: actions/checkout@v3
 
@@ -37,7 +39,7 @@ jobs:
         id: check
         with:
           trigger: 'deploy' # no trigger cause at this point we are already valid
-          reaction: rocket
+          reaction: +1
         env:
           GITHUB_TOKEN: '${{ secrets.GITHUB_TOKEN }}'
           
