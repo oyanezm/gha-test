@@ -31,6 +31,15 @@ jobs:
         if: (needs.prepare-data.outputs.is-valid-lambdas-deployment != 'true' && needs.prepare-data.outputs.is-valid-api-deployment != 'true') || !needs.prepare-data.outputs.is-valid-environment
         run: exit 1
 
+      - uses: khan/pull-request-comment-trigger@v1.1.0
+        id: check
+        with:
+          trigger: '' # no trigger cause at this point we are already valid
+          reaction: rocket
+        env:
+          GITHUB_TOKEN: '${{ secrets.GITHUB_TOKEN }}'
+          
+
   # Deploy Lambdas
   deploy-lambdas:
     needs: [prepare-data, validate-deployment]
@@ -52,11 +61,6 @@ jobs:
       - uses: actions/checkout@v3
       - name: echo
         run: |
-          echo ${{ needs.prepare-data.outputs.is-valid-environment }} 
-          echo ${{ needs.prepare-data.outputs.is-valid-api-deployment }} 
-          echo ${{ needs.prepare-data.outputs.is-valid-lambdas-deployment }} 
-          echo ${{ fromJSON(needs.prepare-data.outputs.matrix)[0].target[0] }} 
-          echo 'env: ${{fromJSON(env.mapping)}}'
           echo 'account: ${{fromJSON(env.mapping)[matrix.environment]}}'
 
   # Deploy Lambdas
