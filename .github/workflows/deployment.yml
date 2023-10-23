@@ -18,7 +18,7 @@ jobs:
 
   # Deploy Lambdas
   deploy-lambdas:
-    needs: extract-data
+    needs: prepare-data
     strategy:
       matrix:
         target: ${{ fromJSON(needs.extract-data.outputs.matrix)[0].target }}
@@ -46,7 +46,7 @@ jobs:
 
   # Deploy Lambdas
   deploy-api:
-    needs: extract-data
+    needs: prepare-data
     strategy:
       matrix:
         target: ${{ fromJSON(needs.extract-data.outputs.matrix)[0].target }}
