@@ -13,6 +13,8 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       matrix: ${{ steps.matrix.outputs.matrix}}
+      if-lambda-deploy: ${{ steps.validator.outputs.lambda}}
+      if-api-deploy: ${{ steps.validator.outputs.lambda}}
     steps:
     
     # Parse Comment
@@ -28,6 +30,12 @@ jobs:
       id: matrix
       run: |
         echo "matrix=[{ \"target\" : [\"${{ steps.get-pr-comment.outputs.group2 }}\"], \"environment\": [\"${{ steps.get-pr-comment.outputs.group3 }}\"] }]" >> "$GITHUB_OUTPUT"
+
+    # Output For Validator
+    - name: Extract Lambda Deployment Validation
+      id: validator
+      run: |
+        echo "lambda=${{ fromJSON(env.mapping)[steps.get-pr-comment.outputs.group3] }} >> "$GITHUB_OUTPUT"
   
 
   # Deploy Lambdas
@@ -37,7 +45,7 @@ jobs:
       matrix:
         target: ${{ fromJSON(needs.extract-data.outputs.matrix)[0].target }}
         environment: ${{ fromJSON(needs.extract-data.outputs.matrix)[0].environment }}
-    if: fromJSON(needs.extract-data.outputs.matrix)[0].target[0] == 'lambdas' && fromJSON(env.mapping)[fromJSON(needs.extract-data.outputs.matrix)[0].environment[0]] != ''
+    if: fromJSON(needs.extract-data.outputs.matrix)[0].target[0] == 'lambdas'
     runs-on: ubuntu-latest
     permissions:
       pull-requests: write
