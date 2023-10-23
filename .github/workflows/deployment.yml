@@ -45,7 +45,7 @@ jobs:
       matrix:
         target: ${{ fromJSON(needs.extract-data.outputs.matrix)[0].target }}
         environment: ${{ fromJSON(needs.extract-data.outputs.matrix)[0].environment }}
-    if: needs.extract-data.outputs.is-valid-lambda-deployment && needs.extract-data.outputs.is-valid-environment
+    if: needs.extract-data.outputs.is-valid-lambda-deployment == 'true' && needs.extract-data.outputs.is-valid-environment
     runs-on: ubuntu-latest
     permissions:
       pull-requests: write
@@ -73,7 +73,7 @@ jobs:
       matrix:
         target: ${{ fromJSON(needs.extract-data.outputs.matrix)[0].target }}
         environment: ${{ fromJSON(needs.extract-data.outputs.matrix)[0].environment }}
-    if: needs.extract-data.outputs.is-valid-api-deployment && needs.extract-data.outputs.is-valid-environment
+    if: needs.extract-data.outputs.is-valid-api-deployment == 'true' && needs.extract-data.outputs.is-valid-environment
     runs-on: ubuntu-latest
     permissions:
       pull-requests: write
