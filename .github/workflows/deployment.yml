@@ -11,7 +11,7 @@ jobs:
   # Extracts Enviroment / Target from PR Comment
   prepare-data:
     outputs:
-      matrix: ${{ steps.extract-data.outputs.matric }}
+      matrix: ${{ steps.extract-data.outputs.matrix }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
