@@ -52,8 +52,6 @@ jobs:
         if: env.is-valid-deployment != 'true'
         run: exit 1
 
-          
-
   # Deploy Lambdas
   deploy-lambdas:
     needs: [prepare-data, validate-deployment]
@@ -63,7 +61,6 @@ jobs:
         environment: ${{ fromJSON(needs.prepare-data.outputs.matrix)[0].environment }}
     if: needs.prepare-data.outputs.is-valid-lambdas-deployment == 'true'
     runs-on: ubuntu-latest
-    permissions:
     steps:
     
       # Checkout
