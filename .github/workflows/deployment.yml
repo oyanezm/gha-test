@@ -33,7 +33,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: prepare-data
     env:
-      is-valid-deployment: ${{ (needs.prepare-data.outputs.is-valid-lambdas-deployment == 'true' || needs.prepare-data.outputs.is-valid-api-deployment == 'true') && needs.prepare-data.outputs.is-valid-environment }}
+      is-valid-deployment: ${{ (needs.prepare-data.outputs.is-valid-lambdas-deployment == 'true' || needs.prepare-data.outputs.is-valid-api-deployment == 'true') && needs.prepare-data.outputs.is-valid-environment == 'true' }}
       reactions: '{"true": "+1", "false": "-1"}'
     steps:
       - uses: actions/checkout@v3
