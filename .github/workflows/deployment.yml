@@ -55,7 +55,7 @@ jobs:
       matrix:
         target: ${{ fromJSON(needs.extract-data.outputs.matrix)[0].target }}
         environment: ${{ fromJSON(needs.extract-data.outputs.matrix)[0].environment }}
-    # if: fromJSON(needs.extract-data.outputs.matrix)[0].target[0] == 'lambdas'
+    if: fromJSON(needs.extract-data.outputs.matrix)[0].target[0] == 'lambdas' && needs.extract-data.outputs.is-valid-environment
     runs-on: ubuntu-latest
     permissions:
       pull-requests: write
