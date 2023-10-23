@@ -44,7 +44,7 @@ jobs:
       matrix:
         target: ${{ fromJSON(needs.extract-data.outputs.matrix)[0].target }}
         environment: ${{ fromJSON(needs.extract-data.outputs.matrix)[0].environment }}
-    if: fromJSON(needs.extract-data.outputs.matrix)[0].target[0] == 'lambdas' && needs.extract-data.outputs.validate
+    if: fromJSON(needs.extract-data.outputs.matrix)[0].target[0] == 'lambdas'
     runs-on: ubuntu-latest
     permissions:
       pull-requests: write
@@ -58,6 +58,7 @@ jobs:
       - uses: actions/checkout@v3
       - name: echo
         run: |
+          echo ${{ needs.extract-data.outputs.validate }} 
           echo ${{ fromJSON(needs.extract-data.outputs.matrix).target }} 
           echo 'env: ${{fromJSON(env.mapping)}}'
           echo 'account: ${{fromJSON(env.mapping)[matrix.environment]}}'
