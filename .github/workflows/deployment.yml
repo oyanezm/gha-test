@@ -28,11 +28,9 @@ jobs:
       - uses: actions/checkout@v3
 
       - name: Early Quit
-        if: (needs.prepare-data.outputs.is-valid-lambda-deployment != 'true' && needs.prepare-data.outputs.is-valid-api-deployment != 'true') || !needs.prepare-data.outputs.is-valid-environment
-        run: exit_with_success 
-      
-  
-      
+        # if: (needs.prepare-data.outputs.is-valid-lambda-deployment != 'true' && needs.prepare-data.outputs.is-valid-api-deployment != 'true') || !needs.prepare-data.outputs.is-valid-environment
+        if: (needs.prepare-data.outputs.is-valid-lambda-deployment != 'true' && needs.prepare-data.outputs.is-valid-api-deployment != 'true')
+        run: exit 1
 
   # Deploy Lambdas
   deploy-lambdas:
