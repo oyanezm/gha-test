@@ -21,9 +21,9 @@ jobs:
     needs: prepare-data
     strategy:
       matrix:
-        target: ${{ fromJSON(needs.extract-data.outputs.matrix)[0].target }}
-        environment: ${{ fromJSON(needs.extract-data.outputs.matrix)[0].environment }}
-    if: needs.extract-data.outputs.is-valid-lambda-deployment == 'true' && needs.extract-data.outputs.is-valid-environment
+        target: ${{ fromJSON(needs.prepare-data.outputs.matrix)[0].target }}
+        environment: ${{ fromJSON(needs.prepare-data.outputs.matrix)[0].environment }}
+    if: needs.prepare-data.outputs.is-valid-lambda-deployment == 'true' && needs.prepare-data.outputs.is-valid-environment
     runs-on: ubuntu-latest
     permissions:
       pull-requests: write
@@ -37,10 +37,10 @@ jobs:
       - uses: actions/checkout@v3
       - name: echo
         run: |
-          echo ${{ needs.extract-data.outputs.is-valid-environment }} 
-          echo ${{ needs.extract-data.outputs.is-valid-api-deployment }} 
-          echo ${{ needs.extract-data.outputs.is-valid-lambda-deployment }} 
-          echo ${{ fromJSON(needs.extract-data.outputs.matrix)[0].target[0] }} 
+          echo ${{ needs.prepare-data.outputs.is-valid-environment }} 
+          echo ${{ needs.prepare-data.outputs.is-valid-api-deployment }} 
+          echo ${{ needs.prepare-data.outputs.is-valid-lambda-deployment }} 
+          echo ${{ fromJSON(needs.prepare-data.outputs.matrix)[0].target[0] }} 
           echo 'env: ${{fromJSON(env.mapping)}}'
           echo 'account: ${{fromJSON(env.mapping)[matrix.environment]}}'
 
@@ -49,9 +49,9 @@ jobs:
     needs: prepare-data
     strategy:
       matrix:
-        target: ${{ fromJSON(needs.extract-data.outputs.matrix)[0].target }}
-        environment: ${{ fromJSON(needs.extract-data.outputs.matrix)[0].environment }}
-    if: needs.extract-data.outputs.is-valid-api-deployment == 'true' && needs.extract-data.outputs.is-valid-environment
+        target: ${{ fromJSON(needs.prepare-data.outputs.matrix)[0].target }}
+        environment: ${{ fromJSON(needs.prepare-data.outputs.matrix)[0].environment }}
+    if: needs.prepare-data.outputs.is-valid-api-deployment == 'true' && needs.prepare-data.outputs.is-valid-environment
     runs-on: ubuntu-latest
     permissions:
       pull-requests: write
