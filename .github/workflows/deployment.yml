@@ -23,6 +23,7 @@ jobs:
       - uses: ./.github/actions/deploy-prepare
         id: extract-data
 
+  # Validate Input && React
   validate-deployment:
     runs-on: ubuntu-latest
     needs: prepare-data
@@ -31,17 +32,18 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Early Quit
-        if: (needs.prepare-data.outputs.is-valid-lambdas-deployment != 'true' && needs.prepare-data.outputs.is-valid-api-deployment != 'true') || !needs.prepare-data.outputs.is-valid-environment
-        run: exit 1
-
       - uses: khan/pull-request-comment-trigger@v1.1.0
         id: check
         with:
           trigger: 'deploy' # no trigger cause at this point we are already valid
-          reaction: '+1'
+          reaction: '${{ fromJson({"true": "+1", "false": "-1"}) }}[env.is-valid-deployment]'
         env:
           GITHUB_TOKEN: '${{ secrets.GITHUB_TOKEN }}'
+
+      - name: Early Quit
+        if: env.is-valid-deployment != 'true'
+        run: exit 1
+
           
 
   # Deploy Lambdas
