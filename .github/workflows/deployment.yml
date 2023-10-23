@@ -47,6 +47,22 @@ jobs:
         if: env.is-valid-deployment == 'false'
         run: exit 1
 
+      # ... other steps to deploy the code
+      - name: Add comment to PR
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const name = '${{ github.workflow }},;
+                  url = '${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}',
+                  body = 'Follow th worflow';
+
+            await github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: body
+            })
+
   # Deploy Lambdas
   deploy-lambdas:
     needs: [validate-deployment]
