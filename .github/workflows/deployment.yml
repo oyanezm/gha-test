@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       matrix: ${{ steps.matrix.outputs.matrix}}
-      validate: ${{ steps.validator.outputs.environment}}
+      is-valid-environment: ${{ steps.validator.outputs.environment}}
     steps:
     
     # Parse Comment
@@ -32,7 +32,7 @@ jobs:
 
     # Output For Validator
     - name: Extract Environment Validator
-      id: validator
+      id: environment-validator
       run: |
         echo "environment=${{ fromJSON(env.mapping)[steps.get-pr-comment.outputs.group3] }}" >> "$GITHUB_OUTPUT"
   
@@ -58,7 +58,7 @@ jobs:
       - uses: actions/checkout@v3
       - name: echo
         run: |
-          echo ${{ needs.extract-data.outputs.validate }} 
+          echo ${{ needs.extract-data.outputs.is-valid-environment }} 
           echo ${{ fromJSON(needs.extract-data.outputs.matrix).target }} 
           echo 'env: ${{fromJSON(env.mapping)}}'
           echo 'account: ${{fromJSON(env.mapping)[matrix.environment]}}'
