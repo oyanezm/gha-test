@@ -33,13 +33,10 @@ jobs:
     runs-on: ubuntu-latest
     needs: prepare-data
     env:
-      test:  ${{ needs.prepare-data.outputs.is-valid-environment }}
-      is-valid-deployment: ${{ (needs.prepare-data.outputs.is-valid-lambdas-deployment != 'true' && needs.prepare-data.outputs.is-valid-api-deployment != 'true') || !needs.prepare-data.outputs.is-valid-environment }}
+      is-valid-deployment: ${{ (needs.prepare-data.outputs.is-valid-lambdas-deployment == 'true' || needs.prepare-data.outputs.is-valid-api-deployment == 'true') && needs.prepare-data.outputs.is-valid-environment }}
       reactions: '{"true": "+1", "false": "-1"}'
     steps:
       - uses: actions/checkout@v3
-      - run: echo ${{ env.is-valid-deployment }} ${{env.test}}
-
       - uses: khan/pull-request-comment-trigger@v1.1.0
         id: check
         with:
@@ -49,7 +46,7 @@ jobs:
           GITHUB_TOKEN: '${{ secrets.GITHUB_TOKEN }}'
 
       - name: Early Quit
-        if: env.is-valid-deployment != 'true'
+        if: env.is-valid-deployment == 'false'
         run: exit 1
 
   # Deploy Lambdas
