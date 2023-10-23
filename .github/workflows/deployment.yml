@@ -9,34 +9,12 @@ env:
 jobs:
 
   # Extracts Enviroment / Target from PR Comment
-  extract-data:
+  prepare-data:
     runs-on: ubuntu-latest
-    outputs:
-      matrix: ${{ steps.matrix.outputs.matrix}}
-      is-valid-environment: ${{ steps.validator.outputs.environment }}
-      is-valid-lambda-deployment: ${{ steps.validator.outputs.lambda }}
-      is-valid-api-deployment: ${{ steps.validator.outputs.api }}
     steps:
-    
-    # Parse Comment
-    - name: Get PR comment
-      uses: actions-ecosystem/action-regex-match@v2
-      id: get-pr-comment
-      with:
-        text: ${{ github.event.comment.body }}
-        regex: '^(deploy) (lambdas|api) (development|staging|production)$'
+      - uses: actions/checkout@v3
+      - uses: ./.github/actions/deploy-prepare
       
-    - name: Extract Environment
-      id: matrix
-      run: |
-        echo "matrix=[{ \"target\" : [\"${{ steps.get-pr-comment.outputs.group2 }}\"], \"environment\": [\"${{ steps.get-pr-comment.outputs.group3 }}\"] }]" >> "$GITHUB_OUTPUT"
-
-    - name: Extract Validator
-      id: validator
-      run: |
-        echo "environment=${{ fromJSON(env.mapping)[steps.get-pr-comment.outputs.group3] }}" >> "$GITHUB_OUTPUT"
-        echo "lambda=${{ steps.get-pr-comment.outputs.group2 == 'lambdas' }}" >> "$GITHUB_OUTPUT"
-        echo "api=${{ steps.get-pr-comment.outputs.group2 == 'api' }}" >> "$GITHUB_OUTPUT"
 
   # Deploy Lambdas
   deploy-lambdas:
