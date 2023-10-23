@@ -6,6 +6,8 @@ on:
 env:
   mapping: '{"development": "111", "staging": "222", "production": "333"}'
 
+permissions: write-all
+
 jobs:
 
   # Extracts Enviroment / Target from PR Comment
