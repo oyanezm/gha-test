@@ -52,9 +52,9 @@ jobs:
         uses: actions/github-script@v6
         with:
           script: |
-            const name = '${{ github.workflow }},;
-                  url = '${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}',
-                  body = 'Follow th worflow';
+            const name = '${{ github.workflow }};
+            const url = '${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}';
+            const body = 'Follow th worflow';
 
             await github.rest.issues.createComment({
               issue_number: context.issue.number,
