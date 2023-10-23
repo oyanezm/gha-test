@@ -29,8 +29,12 @@ jobs:
 
       - name: Early Quit
         # if: (needs.prepare-data.outputs.is-valid-lambda-deployment != 'true' && needs.prepare-data.outputs.is-valid-api-deployment != 'true') || !needs.prepare-data.outputs.is-valid-environment
-        if: (needs.prepare-data.outputs.is-valid-lambda-deployment != 'true' && needs.prepare-data.outputs.is-valid-api-deployment != 'true')
-        run: exit 1
+        # if: (needs.prepare-data.outputs.is-valid-lambda-deployment != 'true' && needs.prepare-data.outputs.is-valid-api-deployment != 'true')
+        # run: exit 1
+        run: |
+          echo ${{needs.prepare-data.outputs.is-valid-lambda-deployment}}
+          echo ${{needs.prepare-data.outputs.is-valid-api-deployment}}
+          exit 1
 
   # Deploy Lambdas
   deploy-lambdas:
