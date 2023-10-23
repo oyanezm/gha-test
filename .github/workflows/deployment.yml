@@ -35,6 +35,17 @@ jobs:
       id: environment-validator
       run: |
         echo "environment=${{ fromJSON(env.mapping)[steps.get-pr-comment.outputs.group3] }}" >> "$GITHUB_OUTPUT"
+
+    # Output For Validator
+    - name: Extract Environment Validator
+      id: lambda-target-validator
+      run: |
+        echo "environment=${{ fromJSON(env.mapping)[steps.get-pr-comment.outputs.group2] == 'lambdas' }}" >> "$GITHUB_OUTPUT"
+
+    - name: Extract Environment Validator
+      id: api-target-validator
+      run: |
+        echo "environment=${{ fromJSON(env.mapping)[steps.get-pr-comment.outputs.group2] == 'api' }}" >> "$GITHUB_OUTPUT"
   
 
   # Deploy Lambdas
@@ -44,7 +55,7 @@ jobs:
       matrix:
         target: ${{ fromJSON(needs.extract-data.outputs.matrix)[0].target }}
         environment: ${{ fromJSON(needs.extract-data.outputs.matrix)[0].environment }}
-    if: fromJSON(needs.extract-data.outputs.matrix)[0].target[0] == 'lambdas'
+    # if: fromJSON(needs.extract-data.outputs.matrix)[0].target[0] == 'lambdas'
     runs-on: ubuntu-latest
     permissions:
       pull-requests: write
@@ -59,7 +70,7 @@ jobs:
       - name: echo
         run: |
           echo ${{ needs.extract-data.outputs.is-valid-environment }} 
-          echo ${{ fromJSON(needs.extract-data.outputs.matrix).target }} 
+          echo ${{ fromJSON(needs.extract-data.outputs.matrix)[0].target[0] }} 
           echo 'env: ${{fromJSON(env.mapping)}}'
           echo 'account: ${{fromJSON(env.mapping)[matrix.environment]}}'
 
