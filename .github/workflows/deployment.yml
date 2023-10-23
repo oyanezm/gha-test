@@ -29,6 +29,7 @@ jobs:
     needs: prepare-data
     env:
       is-valid-deployment: ${{ (needs.prepare-data.outputs.is-valid-lambdas-deployment != 'true' && needs.prepare-data.outputs.is-valid-api-deployment != 'true') || !needs.prepare-data.outputs.is-valid-environment }}
+      reactions: '{"true": "+1", "false": "-1"}'
     steps:
       - uses: actions/checkout@v3
 
@@ -36,7 +37,7 @@ jobs:
         id: check
         with:
           trigger: 'deploy' # no trigger cause at this point we are already valid
-          reaction: '${{ fromJson({\"true\": \"+1\", \"false\": \"-1\"}) }}[env.is-valid-deployment]'
+          reaction: '${{ fromJson(env.reactions)[env.is-valid-deployment] }}'
         env:
           GITHUB_TOKEN: '${{ secrets.GITHUB_TOKEN }}'
 
