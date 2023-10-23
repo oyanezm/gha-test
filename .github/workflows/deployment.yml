@@ -23,7 +23,7 @@ jobs:
       matrix:
         target: ${{ fromJSON(needs.prepare-data.outputs.matrix)[0].target }}
         environment: ${{ fromJSON(needs.prepare-data.outputs.matrix)[0].environment }}
-    if: needs.prepare-data.outputs.is-valid-lambda-deployment == 'true' && needs.prepare-data.outputs.is-valid-environment
+    # if: needs.prepare-data.outputs.is-valid-lambda-deployment == 'true' && needs.prepare-data.outputs.is-valid-environment
     runs-on: ubuntu-latest
     permissions:
       pull-requests: write
