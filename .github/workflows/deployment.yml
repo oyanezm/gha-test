@@ -37,12 +37,13 @@ jobs:
         echo "environment=${{ fromJSON(env.mapping)[steps.get-pr-comment.outputs.group3] }}" >> "$GITHUB_OUTPUT"
 
     # Output For Validator
-    - name: Extract Environment Validator
+    - name: Lambda Target Validator
       id: lambda-target-validator
       run: |
+        echo ${{ fromJSON(env.mapping)[steps.get-pr-comment.outputs.group2]}}
         echo "environment=${{ fromJSON(env.mapping)[steps.get-pr-comment.outputs.group2] == 'lambdas' }}" >> "$GITHUB_OUTPUT"
 
-    - name: Extract Environment Validator
+    - name: Api Target Validator
       id: api-target-validator
       run: |
         echo "environment=${{ fromJSON(env.mapping)[steps.get-pr-comment.outputs.group2] == 'api' }}" >> "$GITHUB_OUTPUT"
