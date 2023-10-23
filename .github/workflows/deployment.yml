@@ -32,7 +32,9 @@ jobs:
         id: extract-data
 
       - name: Set Env
-        run: echo "is-valid-deployment=${{ (steps.extract-data.outputs.is-valid-lambdas-deployment == 'true' || steps.validate-deployment.outputs.is-valid-api-deployment == 'true') && steps.validate-deployment.outputs.is-valid-environment == 'true' }}" >> ${GITHUB_ENV}
+        run: |
+          echo ${{steps.extract-data.outputs.is-valid-lambdas-deployment}}
+          echo "is-valid-deployment=${{ (steps.extract-data.outputs.is-valid-lambdas-deployment == 'true' || steps.validate-deployment.outputs.is-valid-api-deployment == 'true') && steps.validate-deployment.outputs.is-valid-environment == 'true' }}" >> ${GITHUB_ENV}
 
       - uses: khan/pull-request-comment-trigger@v1.1.0
         id: check
