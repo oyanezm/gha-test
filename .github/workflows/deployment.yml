@@ -13,7 +13,9 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       matrix: ${{ steps.matrix.outputs.matrix}}
-      is-valid-environment: ${{ steps.validator.outputs.environment}}
+      is-valid-environment: ${{ steps.validator.outputs.environment }}
+      is-valid-lambda-deployment: ${{ steps.validator.outputs.lambda }}
+      is-valid-api-deployment: ${{ steps.validator.outputs.api }}
     steps:
     
     # Parse Comment
@@ -24,30 +26,17 @@ jobs:
         text: ${{ github.event.comment.body }}
         regex: '^(deploy) (lambdas|api) (development|staging|production)$'
       
-    # Output for Matrix
     - name: Extract Environment
       id: matrix
       run: |
         echo "matrix=[{ \"target\" : [\"${{ steps.get-pr-comment.outputs.group2 }}\"], \"environment\": [\"${{ steps.get-pr-comment.outputs.group3 }}\"] }]" >> "$GITHUB_OUTPUT"
 
-    # Output For Validator
-    - name: Extract Environment Validator
-      id: environment-validator
+    - name: Validator
+      id: validator
       run: |
         echo "environment=${{ fromJSON(env.mapping)[steps.get-pr-comment.outputs.group3] }}" >> "$GITHUB_OUTPUT"
-
-    # Output For Validator
-    - name: Lambda Target Validator
-      id: lambda-target-validator
-      run: |
-        echo ${{ fromJSON(env.mapping)[steps.get-pr-comment.outputs.group2]}}
-        echo "environment=${{ fromJSON(env.mapping)[steps.get-pr-comment.outputs.group2] == 'lambdas' }}" >> "$GITHUB_OUTPUT"
-
-    - name: Api Target Validator
-      id: api-target-validator
-      run: |
-        echo "environment=${{ fromJSON(env.mapping)[steps.get-pr-comment.outputs.group2] == 'api' }}" >> "$GITHUB_OUTPUT"
-  
+        echo "lambda=${{ steps.get-pr-comment.outputs.group2 == 'lambdas' }}" >> "$GITHUB_OUTPUT"
+        echo "api=${{ steps.get-pr-comment.outputs.group2 == 'api' }}" >> "$GITHUB_OUTPUT"
 
   # Deploy Lambdas
   deploy-lambdas:
@@ -71,6 +60,8 @@ jobs:
       - name: echo
         run: |
           echo ${{ needs.extract-data.outputs.is-valid-environment }} 
+          echo ${{ needs.extract-data.outputs.is-valid-api-deployment }} 
+          echo ${{ needs.extract-data.outputs.is-valid-lambda-deployment }} 
           echo ${{ fromJSON(needs.extract-data.outputs.matrix)[0].target[0] }} 
           echo 'env: ${{fromJSON(env.mapping)}}'
           echo 'account: ${{fromJSON(env.mapping)[matrix.environment]}}'
