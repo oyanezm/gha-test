@@ -56,8 +56,7 @@ jobs:
               owner: context.repo.owner,
               repo: context.repo.repo,
               body: "" +
-                "# Deploying `${{ fromJSON(steps.extract-data.outputs.matrix)[0].target[0] }}` to `${{ fromJSON(steps.extract-data.outputs.matrix)[0].environment[0] }}` \n" + 
-                "Commit: ${{ github.workflow }} \n" + 
+                "## Deploying `${{ fromJSON(steps.extract-data.outputs.matrix)[0].target[0] }}` to `${{ fromJSON(steps.extract-data.outputs.matrix)[0].environment[0] }}` \n" + 
                 "Run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
             })
 
