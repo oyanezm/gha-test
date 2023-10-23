@@ -4,7 +4,7 @@ on:
   issue_comment:
     types: [created]
 env:
-  mapping: '{"development": "111", "staging": "222", "production": "333"}'
+  ACCOUNT_MAPPING: '{"development": "111", "staging": "222", "production": "333"}'
 
 permissions:
   pull-requests: write
@@ -75,7 +75,7 @@ jobs:
       - uses: actions/checkout@v3
       - name: echo
         run: |
-          echo 'account: ${{fromJSON(env.mapping)[matrix.environment]}}'
+          echo 'account: ${{fromJSON(env.ACCOUNT_MAPPING)[matrix.environment]}}'
 
   # Deploy Lambdas
   deploy-api:

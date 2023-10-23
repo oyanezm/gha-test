@@ -36,6 +36,6 @@ runs:
       id: validator
       shell: bash
       run: |
-        echo "environment=${{ fromJSON(env.mapping)[steps.get-pr-comment.outputs.group3] != '' }}" >> "$GITHUB_OUTPUT"
+        echo "environment=${{ fromJSON(env.ACCOUNT_MAPPING)[steps.get-pr-comment.outputs.group3] != '' }}" >> "$GITHUB_OUTPUT"
         echo "lambda=${{ steps.get-pr-comment.outputs.group2 == 'lambdas' }}" >> "$GITHUB_OUTPUT"
         echo "api=${{ steps.get-pr-comment.outputs.group2 == 'api' }}" >> "$GITHUB_OUTPUT"
