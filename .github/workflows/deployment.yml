@@ -36,7 +36,7 @@ jobs:
         id: check
         with:
           trigger: 'deploy' # no trigger cause at this point we are already valid
-          reaction: '${{ fromJson({"true": "+1", "false": "-1"}) }}[env.is-valid-deployment]'
+          reaction: '${{ fromJson({\"true\": \"+1\", \"false\": \"-1\"}) }}[env.is-valid-deployment]'
         env:
           GITHUB_TOKEN: '${{ secrets.GITHUB_TOKEN }}'
 
