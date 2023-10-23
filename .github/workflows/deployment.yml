@@ -31,7 +31,7 @@ jobs:
       run: |
         echo "matrix=[{ \"target\" : [\"${{ steps.get-pr-comment.outputs.group2 }}\"], \"environment\": [\"${{ steps.get-pr-comment.outputs.group3 }}\"] }]" >> "$GITHUB_OUTPUT"
 
-    - name: Validator
+    - name: Extract Validator
       id: validator
       run: |
         echo "environment=${{ fromJSON(env.mapping)[steps.get-pr-comment.outputs.group3] }}" >> "$GITHUB_OUTPUT"
@@ -45,7 +45,7 @@ jobs:
       matrix:
         target: ${{ fromJSON(needs.extract-data.outputs.matrix)[0].target }}
         environment: ${{ fromJSON(needs.extract-data.outputs.matrix)[0].environment }}
-    if: fromJSON(needs.extract-data.outputs.matrix)[0].target[0] == 'lambdas' && needs.extract-data.outputs.is-valid-environment
+    if: needs.extract-data.outputs.is-valid-lambda-deployment && needs.extract-data.outputs.is-valid-environment
     runs-on: ubuntu-latest
     permissions:
       pull-requests: write
@@ -70,8 +70,10 @@ jobs:
   deploy-api:
     needs: extract-data
     strategy:
-      matrix: ${{ fromJSON(needs.extract-data.outputs.matrix) }}
-    if: fromJSON(needs.extract-data.outputs.matrix)[0].target[0] == 'api'
+      matrix:
+        target: ${{ fromJSON(needs.extract-data.outputs.matrix)[0].target }}
+        environment: ${{ fromJSON(needs.extract-data.outputs.matrix)[0].environment }}
+    if: needs.extract-data.outputs.is-valid-api-deployment && needs.extract-data.outputs.is-valid-environment
     runs-on: ubuntu-latest
     permissions:
       pull-requests: write
