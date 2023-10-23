@@ -13,7 +13,7 @@ jobs:
     outputs:
       matrix: ${{ steps.extract-data.outputs.matrix }}
       is-valid-environment: ${{ steps.extract-data.outputs.is-valid-environment }}
-      is-valid-lambda-deployment: ${{ steps.extract-data.outputs.is-valid-lambda-deployment }}
+      is-valid-lambdas-deployment: ${{ steps.extract-data.outputs.is-valid-lambdas-deployment }}
       is-valid-api-deployment: ${{ steps.extract-data.outputs.is-valid-api-deployment }}
     runs-on: ubuntu-latest
     steps:
@@ -28,11 +28,11 @@ jobs:
       - uses: actions/checkout@v3
 
       - name: Early Quit
-        # if: (needs.prepare-data.outputs.is-valid-lambda-deployment != 'true' && needs.prepare-data.outputs.is-valid-api-deployment != 'true') || !needs.prepare-data.outputs.is-valid-environment
-        # if: (needs.prepare-data.outputs.is-valid-lambda-deployment != 'true' && needs.prepare-data.outputs.is-valid-api-deployment != 'true')
+        # if: (needs.prepare-data.outputs.is-valid-lambdas-deployment != 'true' && needs.prepare-data.outputs.is-valid-api-deployment != 'true') || !needs.prepare-data.outputs.is-valid-environment
+        # if: (needs.prepare-data.outputs.is-valid-lambdas-deployment != 'true' && needs.prepare-data.outputs.is-valid-api-deployment != 'true')
         # run: exit 1
         run: |
-          echo ${{needs.prepare-data.outputs.is-valid-lambda-deployment}}
+          echo ${{needs.prepare-data.outputs.is-valid-lambdas-deployment}}
           echo ${{needs.prepare-data.outputs.is-valid-api-deployment}}
           exit 1
 
@@ -43,7 +43,7 @@ jobs:
       matrix:
         target: ${{ fromJSON(needs.prepare-data.outputs.matrix)[0].target }}
         environment: ${{ fromJSON(needs.prepare-data.outputs.matrix)[0].environment }}
-    if: needs.prepare-data.outputs.is-valid-lambda-deployment == 'true'
+    if: needs.prepare-data.outputs.is-valid-lambdas-deployment == 'true'
     runs-on: ubuntu-latest
     permissions:
       pull-requests: write
@@ -59,7 +59,7 @@ jobs:
         run: |
           echo ${{ needs.prepare-data.outputs.is-valid-environment }} 
           echo ${{ needs.prepare-data.outputs.is-valid-api-deployment }} 
-          echo ${{ needs.prepare-data.outputs.is-valid-lambda-deployment }} 
+          echo ${{ needs.prepare-data.outputs.is-valid-lambdas-deployment }} 
           echo ${{ fromJSON(needs.prepare-data.outputs.matrix)[0].target[0] }} 
           echo 'env: ${{fromJSON(env.mapping)}}'
           echo 'account: ${{fromJSON(env.mapping)[matrix.environment]}}'
