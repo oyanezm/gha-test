@@ -37,6 +37,7 @@ jobs:
       reactions: '{"true": "+1", "false": "-1"}'
     steps:
       - uses: actions/checkout@v3
+      - run: echo ${{fromJson(env.reactions)[env.is-valid-deployment]}}
       - uses: khan/pull-request-comment-trigger@v1.1.0
         id: check
         with:
@@ -44,7 +45,6 @@ jobs:
           reaction: '${{ fromJson(env.reactions)[env.is-valid-deployment] }}'
         env:
           GITHUB_TOKEN: '${{ secrets.GITHUB_TOKEN }}'
-
       - name: Early Quit
         if: env.is-valid-deployment == 'false'
         run: exit 1
