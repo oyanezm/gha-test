@@ -17,8 +17,6 @@ jobs:
 
   # Extracts Enviroment / Target from PR Comment
   validate-deployment:
-    env:
-      REACTIONS: '{"true": "+1", "false": "-1"}'
     outputs:
       matrix: ${{ steps.extract-data.outputs.matrix }}
       is-valid-environment: ${{ steps.extract-data.outputs.is-valid-environment }}
@@ -27,38 +25,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      
       - uses: ./.github/actions/deploy-prepare
         id: extract-data
-
-      - name: Set Env
-        run: |
-          echo "IS_VALID_DEPLOYMENT=${{ (steps.extract-data.outputs.is-valid-lambdas-deployment == 'true' || steps.validate-deployment.outputs.is-valid-api-deployment == 'true') && steps.extract-data.outputs.is-valid-environment == 'true' }}" >> ${GITHUB_ENV}
-
-      - uses: khan/pull-request-comment-trigger@v1.1.0
-        id: check
-        with:
-          trigger: 'deploy' # no trigger cause at this point we are already valid
-          reaction: '${{ fromJson(env.REACTIONS)[env.IS_VALID_DEPLOYMENT] }}'
-        env:
-          GITHUB_TOKEN: '${{ secrets.GITHUB_TOKEN }}'
-          
-      - name: Early Quit
-        if: env.IS_VALID_DEPLOYMENT == 'false'
-        run: exit 1
-
-      - name: Add comment to PR
-        uses: actions/github-script@v6
-        with:
-          script: |
-            await github.rest.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: "" +
-                "## Deploying `${{ fromJSON(steps.extract-data.outputs.matrix)[0].target[0] }}` to `${{ fromJSON(steps.extract-data.outputs.matrix)[0].environment[0] }}` \n" + 
-                "Run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
-            })
 
   # Deploy Lambdas
   deploy-lambdas:

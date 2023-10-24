@@ -1,6 +1,12 @@
 name: Prepare Deployment
 description: Extracts Data to will feed deployment
 
+inputs:
+  reactions:
+    description: Reaction Object to be used upon deployment
+    default: '{"true": "+1", "false": "-1"}'
+    required: false
+
 outputs:
   matrix:
     description: Matrix containing Environment and Target for deployment 
@@ -15,9 +21,11 @@ outputs:
     description: Validates API Deployment
     value: ${{ steps.validator.outputs.api }}
 
+
 runs:
   using: composite
   steps:
+  
     # Parse Comment
     - name: Get PR comment
       uses: actions-ecosystem/action-regex-match@v2
@@ -25,13 +33,15 @@ runs:
       with:
         text: ${{ github.event.comment.body }}
         regex: '^(deploy) (lambdas|api) (development|staging|production)$'
-      
+
+    # Output Environment / Target matrix
     - name: Extract Environment
       id: matrix
       shell: bash
       run: |
         echo "matrix=[{ \"target\" : [\"${{ steps.get-pr-comment.outputs.group2 }}\"], \"environment\": [\"${{ steps.get-pr-comment.outputs.group3 }}\"] }]" >> "$GITHUB_OUTPUT"
 
+    # Output Validators
     - name: Extract Validator
       id: validator
       shell: bash
@@ -39,3 +49,38 @@ runs:
         echo "environment=${{ fromJSON(env.ACCOUNT_MAPPING)[steps.get-pr-comment.outputs.group3] != '' }}" >> "$GITHUB_OUTPUT"
         echo "lambda=${{ steps.get-pr-comment.outputs.group2 == 'lambdas' }}" >> "$GITHUB_OUTPUT"
         echo "api=${{ steps.get-pr-comment.outputs.group2 == 'api' }}" >> "$GITHUB_OUTPUT"
+
+    # Set Global Validator
+    - name: Set Env
+      shell: bash
+      run: |
+        echo "IS_VALID_DEPLOYMENT=${{ (steps.validator.outputs.lambdas == 'true' || steps.validator.outputs.api == 'true') && steps.validator.outputs.environment == 'true' }}" >> ${GITHUB_ENV}
+
+    # React to Comment
+    - uses: khan/pull-request-comment-trigger@v1.1.0
+      id: check
+      with:
+        trigger: 'deploy' # no trigger cause at this point we are already valid
+        reaction: '${{ fromJson(inputs.reactions)[env.IS_VALID_DEPLOYMENT] }}'
+      env:
+        GITHUB_TOKEN: '${{ secrets.GITHUB_TOKEN }}'
+
+    # Quit if Deployment is invalid
+    - name: Early Quit
+      shell: bash
+      if: env.IS_VALID_DEPLOYMENT == 'false'
+      run: exit 1
+
+    # Adds Deployment Job to the PR comments
+    - name: Add comment to PR
+      uses: actions/github-script@v6
+      with:
+        script: |
+          await github.rest.issues.createComment({
+            issue_number: context.issue.number,
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            body: "" +
+              "## Deploying `${{ fromJSON(steps.extract-data.outputs.matrix)[0].target[0] }}` to `${{ fromJSON(steps.extract-data.outputs.matrix)[0].environment[0] }}` \n" + 
+              "Run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          })
