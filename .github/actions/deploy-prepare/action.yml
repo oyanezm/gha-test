@@ -60,20 +60,20 @@ runs:
         echo "api=${{ steps.matrix.outputs.target == 'api' }}" >> "$GITHUB_OUTPUT"
 
     # Set Global Validator
-    # - name: Set Env
-    #   id: global-validator
-    #   shell: bash
-    #   run: |
-    #     echo "is-valid-deployment=${{ (steps.validator.outputs.lambdas == 'true' || steps.validator.outputs.api == 'true') && steps.validator.outputs.environment == 'true' }}" >> ${GITHUB_OUTPUT}
+    - name: Set Env
+      id: global-validator
+      shell: bash
+      run: |
+        echo "is-valid-deployment=${{ (steps.validator.outputs.lambdas == 'true' || steps.validator.outputs.api == 'true') && steps.validator.outputs.environment == 'true' }}" >> ${GITHUB_OUTPUT}
 
-    # # React to Comment
-    # - uses: khan/pull-request-comment-trigger@v1.1.0
-    #   id: check
-    #   with:
-    #     trigger: 'deploy' # no trigger cause at this point we are already valid
-    #     reaction: '${{ fromJson(inputs.reactions)[steps.global-validator.outputs.is-valid-deployment] }}'
-    #   env:
-    #     GITHUB_TOKEN: '${{ inputs.github_token }}'
+    # React to Comment
+    - uses: khan/pull-request-comment-trigger@v1.1.0
+      id: check
+      with:
+        trigger: 'deploy' # no trigger cause at this point we are already valid
+        reaction: '${{ fromJson(inputs.reactions)[steps.global-validator.outputs.is-valid-deployment] }}'
+      env:
+        GITHUB_TOKEN: '${{ inputs.github_token }}'
 
     # # Quit if Deployment is invalid
     # - name: Early Quit
