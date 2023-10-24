@@ -91,6 +91,6 @@ runs:
             owner: context.repo.owner,
             repo: context.repo.repo,
             body: "" +
-              "## Deploying `${{ fromJSON(steps.matrix.outputs.target }}` to `${{ steps.matrix.outputs.environment }}` \n" + 
+              "## Deploying `${{ steps.matrix.outputs.target }}` to `${{ steps.matrix.outputs.environment }}` \n" + 
               "Run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
           })
