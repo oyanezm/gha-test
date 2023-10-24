@@ -60,11 +60,11 @@ runs:
         echo "api=${{ steps.matrix.outputs.target == 'api' }}" >> "$GITHUB_OUTPUT"
 
     # Set Global Validator
-    - name: Set Env
-      id: global-validator
-      shell: bash
-      run: |
-        echo "is-valid-deployment=${{ (steps.validator.outputs.lambdas == 'true' || steps.validator.outputs.api == 'true') && steps.validator.outputs.environment == 'true' }}" >> ${GITHUB_OUTPUT}
+    # - name: Set Env
+    #   id: global-validator
+    #   shell: bash
+    #   run: |
+    #     echo "is-valid-deployment=${{ (steps.validator.outputs.lambdas == 'true' || steps.validator.outputs.api == 'true') && steps.validator.outputs.environment == 'true' }}" >> ${GITHUB_OUTPUT}
 
     # # React to Comment
     # - uses: khan/pull-request-comment-trigger@v1.1.0
