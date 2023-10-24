@@ -34,7 +34,7 @@ jobs:
       matrix:
         target: ${{ fromJSON(needs.validate-deployment.outputs.matrix)[0].target }}
         environment: ${{ fromJSON(needs.validate-deployment.outputs.matrix)[0].environment }}
-    if: needs.validate-deployment.outputs.is-valid-lambdas-deployment == 'true'
+    # if: needs.validate-deployment.outputs.is-valid-lambdas-deployment == 'true'
     runs-on: ubuntu-latest
     steps:
     
@@ -43,6 +43,9 @@ jobs:
       - name: echo
         run: |
           echo 'account: ${{fromJSON(env.ACCOUNT_MAPPING)[matrix.environment]}}'
+          echo ${{needs.validate-deployment.outputs.is-valid-lambdas-deployment}}
+          echo ${{needs.validate-deployment.outputs.is-valid-api-deployment}}
+          echo ${{needs.validate-deployment.outputs.is-valid-environment}}
 
   # Deploy Lambdas
   deploy-api:
