@@ -91,7 +91,7 @@ runs:
       uses: actions/github-script@v6
       with:
         script: |
-            await github.rest.issues.createForIssueComment({
+            await github.rest.reactions.createForIssueComment({
               owner: context.repo.owner,
               repo: context.repo.repo,
               comment_id: context.payload.comment.id,
