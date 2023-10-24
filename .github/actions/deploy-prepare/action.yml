@@ -56,7 +56,7 @@ runs:
           echo "target=${{ steps.get-pr-comment.outputs.group2 }}" >> "$GITHUB_OUTPUT"
           echo "environment=${{ steps.get-pr-comment.outputs.group3 }}" >> "$GITHUB_OUTPUT"
         else
-          echo "matrix=[{ \"target\" : [\"default"], \"environment\": [\"${{ steps.get-pr-comment.outputs.group2 }}\"] }]" >> "$GITHUB_OUTPUT"
+          echo "matrix=[{ \"target\" : [\"default\"], \"environment\": [\"${{ steps.get-pr-comment.outputs.group2 }}\"] }]" >> "$GITHUB_OUTPUT"
           echo "target=default" >> "$GITHUB_OUTPUT"
           echo "environment=${{ steps.get-pr-comment.outputs.group2 }}" >> "$GITHUB_OUTPUT"
         fi
