@@ -56,11 +56,11 @@ runs:
       shell: bash
       run: |
         echo "environment=${{ fromJSON(inputs.account_mapping)[steps.matrix.outputs.environment] != '' }}" >> "$GITHUB_OUTPUT"
-        echo "lambda=${{ steps.matrix.outputs.target == 'lambdas' }}" >> "$GITHUB_OUTPUT"
+        echo "lambdas=${{ steps.matrix.outputs.target == 'lambdas' }}" >> "$GITHUB_OUTPUT"
         echo "api=${{ steps.matrix.outputs.target == 'api' }}" >> "$GITHUB_OUTPUT"
 
     # Set Global Validator
-    - name: Set Env
+    - name: Set Global Validator
       id: global-validator
       shell: bash
       run: |
