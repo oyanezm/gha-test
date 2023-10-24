@@ -91,7 +91,7 @@ runs:
       with:
         node-version: 16
         cache: 'npm'
-    - run: "npm i -g --no-package-lock @actions/github@1.1.0"
+    - run: "npm init -y && npm i -g --no-package-lock @actions/github@1.1.0"
       shell: bash
 
     # React to Comment
