@@ -27,7 +27,7 @@ outputs:
     value: ${{ steps.validator.outputs.environment }}
   is-valid-lambdas-deployment:
     description: Validates Lambdas Deployment
-    value: ${{ steps.validator.outputs.lambda }}
+    value: ${{ steps.validator.outputs.lambdas }}
   is-valid-api-deployment:
     description: Validates API Deployment
     value: ${{ steps.validator.outputs.api }}
