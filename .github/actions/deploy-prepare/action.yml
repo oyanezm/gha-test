@@ -95,7 +95,7 @@ runs:
               owner: context.repo.owner,
               repo: context.repo.repo,
               comment_id: context.payload.comment.id,
-              content: ${{ fromJson(inputs.reactions)[steps.global-validator.outputs.is-valid-deployment] }}
+              content: '${{ fromJson(inputs.reactions)[steps.global-validator.outputs.is-valid-deployment] }}''
             });
 
     # Quit if Deployment is invalid
