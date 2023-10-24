@@ -13,6 +13,10 @@ inputs:
     description: Account Mapping, used to validate accounts
     default: '{"development": "", "staging": "", "production": ""}'
     required: false
+  skip_target:
+    description: Wether to not validate target
+    default: 'false'
+    required: false
 
 outputs:
   matrix:
@@ -46,9 +50,16 @@ runs:
       id: matrix
       shell: bash
       run: |
-        echo "matrix=[{ \"target\" : [\"${{ steps.get-pr-comment.outputs.group2 }}\"], \"environment\": [\"${{ steps.get-pr-comment.outputs.group3 }}\"] }]" >> "$GITHUB_OUTPUT"
-        echo "target=${{ steps.get-pr-comment.outputs.group2 }}" >> "$GITHUB_OUTPUT"
-        echo "environment=${{ steps.get-pr-comment.outputs.group3 }}" >> "$GITHUB_OUTPUT"
+        if ${{ inputs.skip_target }} == 'false'
+        then
+          echo "matrix=[{ \"target\" : [\"${{ steps.get-pr-comment.outputs.group2 }}\"], \"environment\": [\"${{ steps.get-pr-comment.outputs.group3 }}\"] }]" >> "$GITHUB_OUTPUT"
+          echo "target=${{ steps.get-pr-comment.outputs.group2 }}" >> "$GITHUB_OUTPUT"
+          echo "environment=${{ steps.get-pr-comment.outputs.group3 }}" >> "$GITHUB_OUTPUT"
+        else
+          echo "matrix=[{ \"target\" : [\"default"], \"environment\": [\"${{ steps.get-pr-comment.outputs.group2 }}\"] }]" >> "$GITHUB_OUTPUT"
+          echo "target=default" >> "$GITHUB_OUTPUT"
+          echo "environment=${{ steps.get-pr-comment.outputs.group2 }}" >> "$GITHUB_OUTPUT"
+        fi
 
     # Output Validators
     - name: Extract Validator
@@ -58,13 +69,14 @@ runs:
         echo "environment=${{ fromJSON(inputs.account_mapping)[steps.matrix.outputs.environment] != '' }}" >> "$GITHUB_OUTPUT"
         echo "lambdas=${{ steps.matrix.outputs.target == 'lambdas' }}" >> "$GITHUB_OUTPUT"
         echo "api=${{ steps.matrix.outputs.target == 'api' }}" >> "$GITHUB_OUTPUT"
+        echo "default=${{ steps.matrix.outputs.target == 'default' }}" >> "$GITHUB_OUTPUT"
 
     # Set Global Validator
     - name: Set Global Validator
       id: global-validator
       shell: bash
       run: |
-        echo "is-valid-deployment=${{ (steps.validator.outputs.lambdas == 'true' || steps.validator.outputs.api == 'true') && steps.validator.outputs.environment == 'true' }}" >> ${GITHUB_OUTPUT}
+        echo "is-valid-deployment=${{ (steps.validator.outputs.lambdas == 'true' || steps.validator.outputs.api == 'true' || steps.validator.outputs.default == 'true') && steps.validator.outputs.environment == 'true' }}" >> ${GITHUB_OUTPUT}
 
     # React to Comment
     - uses: khan/pull-request-comment-trigger@v1.1.0
