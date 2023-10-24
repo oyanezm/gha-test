@@ -37,13 +37,21 @@ runs:
   using: composite
   steps:
   
-    # Parse Comment
-    - name: Get PR comment
+    # Parse Comment if Target
+    - name: Get PR commentfor Target
       uses: actions-ecosystem/action-regex-match@v2
       id: get-pr-comment
       with:
         text: ${{ github.event.comment.body }}
         regex: '^(deploy) (lambdas|api) (development|staging|production)$'
+        
+    # Parse Comment if not Target
+    - name: Get PR comment for No Target
+      uses: actions-ecosystem/action-regex-match@v2
+      id: get-pr-comment-no-target
+      with:
+        text: ${{ github.event.comment.body }}
+        regex: '^(deploy) (development|staging|production)$'
 
     # Output Environment / Target matrix
     - name: Extract Environment
@@ -56,9 +64,9 @@ runs:
           echo "target=${{ steps.get-pr-comment.outputs.group2 }}" >> "$GITHUB_OUTPUT"
           echo "environment=${{ steps.get-pr-comment.outputs.group3 }}" >> "$GITHUB_OUTPUT"
         else
-          echo "matrix=[{ \"target\" : [\"default\"], \"environment\": [\"${{ steps.get-pr-comment.outputs.group2 }}\"] }]" >> "$GITHUB_OUTPUT"
+          echo "matrix=[{ \"target\" : [\"default\"], \"environment\": [\"${{ steps.get-pr-comment-no-target.outputs.group2 }}\"] }]" >> "$GITHUB_OUTPUT"
           echo "target=default" >> "$GITHUB_OUTPUT"
-          echo "environment=${{ steps.get-pr-comment.outputs.group2 }}" >> "$GITHUB_OUTPUT"
+          echo "environment=${{ steps.get-pr-comment-no-target.outputs.group2 }}" >> "$GITHUB_OUTPUT"
         fi
 
     # Output Validators
