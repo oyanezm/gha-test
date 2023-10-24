@@ -91,6 +91,7 @@ runs:
       uses: actions/github-script@v6
       with:
         script: |
+            const { context, GitHub } = require("@actions/github");
             const client = new GitHub(inputs.github_token);
             await client.reactions.createForIssueComment({
               owner: context.repo.owner,
