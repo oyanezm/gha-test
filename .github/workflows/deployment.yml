@@ -8,10 +8,6 @@ env:
 
 permissions:
   pull-requests: write
-  contents: write
-  deployments: write
-  checks: read
-  statuses: write
 
 jobs:
 
@@ -54,12 +50,6 @@ jobs:
         environment: ${{ fromJSON(needs.validate-deployment.outputs.matrix)[0].environment }}
     if: needs.validate-deployment.outputs.is-valid-api-deployment == 'true'
     runs-on: ubuntu-latest
-    permissions:
-      pull-requests: write
-      contents: write
-      deployments: write
-      checks: read
-      statuses: write
     steps:
     
       # Checkout
