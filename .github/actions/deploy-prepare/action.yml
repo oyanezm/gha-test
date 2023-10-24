@@ -50,7 +50,7 @@ runs:
       id: matrix
       shell: bash
       run: |
-        if ${{ inputs.skip_target }} == false
+        if '${{ inputs.skip_target }}' == 'false'
         then
           echo "matrix=[{ \"target\" : [\"${{ steps.get-pr-comment.outputs.group2 }}\"], \"environment\": [\"${{ steps.get-pr-comment.outputs.group3 }}\"] }]" >> "$GITHUB_OUTPUT"
           echo "target=${{ steps.get-pr-comment.outputs.group2 }}" >> "$GITHUB_OUTPUT"
