@@ -47,7 +47,7 @@ runs:
       shell: bash
       run: |
         echo "matrix=[{ \"target\" : [\"${{ steps.get-pr-comment.outputs.group2 }}\"], \"environment\": [\"${{ steps.get-pr-comment.outputs.group3 }}\"] }]" >> "$GITHUB_OUTPUT"
-        echo "target=${{ steps.get-pr-comment.outputs.group2 }} >> "$GITHUB_OUTPUT"
+        echo "target=${{ steps.get-pr-comment.outputs.group2 }}" >> "$GITHUB_OUTPUT"
         echo "environment=${{ steps.get-pr-comment.outputs.group3 }}" >> "$GITHUB_OUTPUT"
 
     # Output Validators
