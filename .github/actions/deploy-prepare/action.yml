@@ -66,31 +66,31 @@ runs:
       run: |
         echo "is-valid-deployment=${{ (steps.validator.outputs.lambdas == 'true' || steps.validator.outputs.api == 'true') && steps.validator.outputs.environment == 'true' }}" >> ${GITHUB_OUTPUT}
 
-    # React to Comment
-    - uses: khan/pull-request-comment-trigger@v1.1.0
-      id: check
-      with:
-        trigger: 'deploy' # no trigger cause at this point we are already valid
-        reaction: '${{ fromJson(inputs.reactions)[steps.global-validator.outputs.is-valid-deployment] }}'
-      env:
-        GITHUB_TOKEN: '${{ inputs.github_token }}'
+    # # React to Comment
+    # - uses: khan/pull-request-comment-trigger@v1.1.0
+    #   id: check
+    #   with:
+    #     trigger: 'deploy' # no trigger cause at this point we are already valid
+    #     reaction: '${{ fromJson(inputs.reactions)[steps.global-validator.outputs.is-valid-deployment] }}'
+    #   env:
+    #     GITHUB_TOKEN: '${{ inputs.github_token }}'
 
-    # Quit if Deployment is invalid
-    - name: Early Quit
-      shell: bash
-      if: steps.global-validator.outputs.is-valid-deployment == 'false'
-      run: exit 1
+    # # Quit if Deployment is invalid
+    # - name: Early Quit
+    #   shell: bash
+    #   if: steps.global-validator.outputs.is-valid-deployment == 'false'
+    #   run: exit 1
 
-    # Adds Deployment Job to the PR comments
-    - name: Add comment to PR
-      uses: actions/github-script@v6
-      with:
-        script: |
-          await github.rest.issues.createComment({
-            issue_number: context.issue.number,
-            owner: context.repo.owner,
-            repo: context.repo.repo,
-            body: "" +
-              "## Deploying `${{ steps.matrix.outputs.target }}` to `${{ steps.matrix.outputs.environment }}` \n" + 
-              "Run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
-          })
+    # # Adds Deployment Job to the PR comments
+    # - name: Add comment to PR
+    #   uses: actions/github-script@v6
+    #   with:
+    #     script: |
+    #       await github.rest.issues.createComment({
+    #         issue_number: context.issue.number,
+    #         owner: context.repo.owner,
+    #         repo: context.repo.repo,
+    #         body: "" +
+    #           "## Deploying `${{ steps.matrix.outputs.target }}` to `${{ steps.matrix.outputs.environment }}` \n" + 
+    #           "Run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+    #       })
