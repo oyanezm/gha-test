@@ -26,6 +26,7 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           account_mapping: ${{ env.ACCOUNT_MAPPING }}
+          skip_target: true
 
   # Deploy Lambdas
   deploy-lambdas:
