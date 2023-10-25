@@ -19,6 +19,7 @@ jobs:
       is-valid-lambdas-deployment: ${{ steps.extract-data.outputs.is-valid-lambdas-deployment }}
       is-valid-api-deployment: ${{ steps.extract-data.outputs.is-valid-api-deployment }}
     runs-on: ubuntu-latest
+    if: startsWith(github.event.comment.body, 'deploy')
     steps:
       - uses: actions/checkout@v3
       - uses: ./.github/actions/deploy-prepare
