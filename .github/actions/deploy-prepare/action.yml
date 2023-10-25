@@ -89,6 +89,7 @@ runs:
     # React to Comment
     - name: Add Reaction to PR
       uses: actions/github-script@v6
+      if: ${{ steps.get-pr-comment-no-target.outputs.group2 || steps.get-pr-comment.outputs.group3 }} # if environment match means we are on valid regex
       with:
         script: |
             await github.rest.reactions.createForIssueComment({
